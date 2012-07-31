@@ -3,7 +3,7 @@
 # Contact: Marshall Ward (marshall.ward@gmail.com)
 
 import struct
-import binascii as ba
+import binascii
 
 HEADER_BYTES = 20
 
@@ -16,12 +16,10 @@ class sfo(object):
     
 
     def load(self, filename):
-        
         sfo_file = open(filename, 'rb')
         
         #---
         # Parse header
-        
         header_raw = sfo_file.read(HEADER_BYTES)
         header = struct.unpack('<4s4BIII', header_raw)
         
@@ -78,7 +76,7 @@ class sfo(object):
             if v_type in (0x0204, 0x0004):
                 value = value_raw
             elif v_type == 0x0404:
-                value = int(ba.hexlify(value_raw[::-1]))
+                value = int(binascii.hexlify(value_raw[::-1]))
             else:
                 print 'unknown format'
             
@@ -87,9 +85,9 @@ class sfo(object):
         self.params = dict(zip(param_names, param_values))
 
         sfo_file.close()
-        
+    
+    
     def dump(self):
-        
         print 'SFO File Signature:', self.file_signature
         print 'SFO File Version:', self.file_version
         
