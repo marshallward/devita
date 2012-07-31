@@ -5,16 +5,19 @@
 import struct
 import binascii
 
+# SFO globals
 HEADER_BYTES = 20
 
 class sfo(object):
     
+    #---
     def __init__(self, filename=None):
         if fname:
             self.filename = fname
             self.load(filename)
     
-
+    
+    #---
     def load(self, filename):
         sfo_file = open(filename, 'rb')
         
@@ -24,7 +27,7 @@ class sfo(object):
         header = struct.unpack('<4s4BIII', header_raw)
         
         self.file_signature = header[0]
-        self.file_version = '.'.join([str(h) for h in header[1:4]])
+        self.file_version = '.'.join([str(h) for h in header[1:5]])
         
         # Variable and data references
         name_table_start = header[5]
@@ -47,7 +50,7 @@ class sfo(object):
             def_record = struct.unpack('<HHIII', def_rec_raw)
             def_table.append(def_record)
         
-        # Read past and padded space between the definition and name tables
+        # Read past any padded space between the definition and name tables
         # TODO: May be able to eliminate this
         sfo_file.read(def_table_padding)
         
@@ -81,12 +84,13 @@ class sfo(object):
                 print 'unknown format'
             
             param_values.append(value)
-
+        
         self.params = dict(zip(param_names, param_values))
-
+        
         sfo_file.close()
     
     
+    #---
     def dump(self):
         print 'SFO File Signature:', self.file_signature
         print 'SFO File Version:', self.file_version
@@ -94,10 +98,46 @@ class sfo(object):
         for p in self.params:
             print "{}: {}".format(p, self.params[p])
 
+    
+    #---
+    def write(self, fname):
+        sfo_out = open(fname, 'wb')
 
+        # Write SFO code
+        sfo_out.write(self.file_signature)
+        
+        # Write version
+        sfo_version = [int(i) for i in self.file_version.split('.')]
+        sfo_version_raw = struct.pack('<4B', *sfo_version)
+        sfo_out.write(sfo_version_raw)
+        
+        # Calculate addressing
+        n_param = len(self.params)
+        
+        def_table_start = HEADER_BYTES
+        def_table_bytes = 16 * n_param
+        
+        # Pack each param name as C-style string (with \x00 ending)
+        name_table_start = def_table_start + def_table_bytes
+        name_table_bytes = sum([(len(s) + 1) for s in self.params])
+        
+        data_table_start = name_table_start + name_table_bytes
+        
+        header = struct.pack('<III', name_table_start, data_table_start,
+                                     n_param)
+        sfo_out.write(header)
+        
+        # Write definition table entries
+        # TODO: create a param class
+        
+        sfo_out.close()
+
+
+#---
 if __name__ == '__main__':
     
     # TODO: Read file from command line
     fname = 'param.sfo'
     test = sfo(fname)
     test.dump()
+    test.write('test.sfo')
