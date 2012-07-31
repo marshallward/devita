@@ -129,6 +129,24 @@ class sfo(object):
         
         # Write definition table entries
         # TODO: create a param class
+        name_bytecount = 0
+        data_bytecount = 0
+
+        # Parameters seem to be sorted alphabetically 
+        for p in sorted(self.params):
+            name_byteref = name_bytecount
+            p_type = 0x0402     # XXX
+            p_size = 6          # XXX
+            p_total = 8         # XXX
+            data_byteref = data_bytecount
+            
+            p_record = struct.pack('<HHIII', name_byteref, p_type, p_size,
+                                             p_total, data_byteref)
+            sfo_out.write(p_record)
+            
+            # Update bytecount
+            name_bytecount = name_bytecount + (len(p) + 1)
+            data_bytecount = data_bytecount + p_total
         
         sfo_out.close()
 
