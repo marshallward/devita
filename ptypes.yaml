@@ -1,0 +1,153 @@
+---
+ACCOUNTID:
+  size: 16
+  type: utf-8
+  used: 16
+ACCOUNT_ID:
+  size: 16
+  type: utf-8 Special Mode
+  used: 16
+ANALOG_MODE:
+  size: 4
+  type: integer
+  used: 4
+APP_VER:
+  size: 8
+  type: utf-8
+  used: 6
+ATTRIBUTE:
+  size: 4
+  type: integer
+  used: 4
+BOOTABLE:
+  size: 4
+  type: integer
+  used: 4
+CATEGORY:
+  size: 4
+  type: utf-8
+  used: 3
+CONTENT_ID:
+  size: 48
+  type: utf-8
+  used: 37
+DETAIL:
+  size: 1024
+  type: utf-8
+  used: null
+ITEM_PRIORITY:
+  size: 4
+  type: integer
+  used: 4
+LANG:
+  size: 4
+  type: integer
+  used: 4
+LICENSE:
+  size: 512
+  type: utf-8
+  used: null
+NPCOMMID:
+  size: 16
+  type: utf-8
+  used: 12
+NP_COMMUNICATION_ID:
+  size: 16
+  type: utf-8
+  used: 13
+PADDING:
+  size: 8
+  type: utf-8 Special Mode
+  used: 0
+PARAMS:
+  size: 1024
+  type: utf-8 Special Mode
+  used: 1024
+PARAMS2:
+  size: 12
+  type: utf-8 Special Mode
+  used: 12
+PARENTALLEVEL:
+  size: 4
+  type: integer
+  used: 4
+PARENTAL_LEVEL:
+  size: 4
+  type: integer
+  used: 4
+PARENTAL_LEVEL_**x**:
+  size: 4
+  type: integer
+  used: 4
+PS3_SYSTEM_VER:
+  size: 8
+  type: utf-8
+  used: 8
+REGION_DENY:
+  size: 4
+  type: integer
+  used: 4
+RESOLUTION:
+  size: 4
+  type: integer
+  used: 4
+SAVEDATA_DETAIL:
+  size: 1024
+  type: utf-8
+  used: null
+SAVEDATA_DIRECTORY:
+  size: 64
+  type: utf-8
+  used: null
+SAVEDATA_FILE_LIST:
+  size: 3168
+  type: utf-8 Special Mode
+  used: 3168
+SAVEDATA_LIST_PARAM:
+  size: 8
+  type: utf-8
+  used: null
+SAVEDATA_PARAMS:
+  size: 128
+  type: utf-8 Special Mode
+  used: 128
+SAVEDATA_TITLE:
+  size: 128
+  type: utf-8
+  used: null
+SOUND_FORMAT:
+  size: 4
+  type: integer
+  used: 4
+SOURCE:
+  size: 4
+  type: integer
+  used: 4
+SUB_TITLE:
+  size: 128
+  type: utf-8
+  used: null
+TARGET_APP_VER:
+  size: 8
+  type: utf-8
+  used: 6
+TITLE:
+  size: 128
+  type: utf-8
+  used: null
+TITLEID0**xx**:
+  size: 16
+  type: utf-8
+  used: 9
+TITLE_**xx**:
+  size: 128
+  type: utf-8
+  used: null
+TITLE_ID:
+  size: 16
+  type: utf-8
+  used: 10
+VERSION:
+  size: 8
+  type: utf-8
+  used: 6
