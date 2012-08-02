@@ -90,9 +90,12 @@ class sfo(object):
             value_raw = sfo_file.read(v_total)
             
             if v_type in (0x0204, 0x0004):
-                value = value_raw.rstrip('\x00') + '\x00'
+                value = value_raw.rstrip('\x00')
             elif v_type == 0x0404:
-                value = int(binascii.hexlify(value_raw[::-1]))
+                # Reverse index to read as little-endian
+                # NOTE: Method for raw string to int?
+                value_ascii = binascii.hexlify(value_raw[::-1])
+                value = int(value_ascii, 16)
             else:
                 print 'unknown format'
             
@@ -115,6 +118,9 @@ class sfo(object):
     #---
     def write(self, fname):
         sfo_out = open(fname, 'wb')
+        
+        # Parameters seem to be sorted alphabetically 
+        p_names = sorted(self.params)
         
         # Write SFO code
         sfo_out.write(self.file_signature)
@@ -144,14 +150,16 @@ class sfo(object):
         # TODO: create a param class
         name_bytecount = 0
         data_bytecount = 0
-
-        # Parameters seem to be sorted alphabetically 
-        for p in sorted(self.params):
+        
+        for p in p_names:
             p_type = type_code[ptypes[p]['type']]
             p_used = ptypes[p]['used']
             # For undefined parameters, fill in the data size
             if not p_used:
                 p_used = len(self.params[p])
+                if p_type in (0x0004, 0x0204):
+                    # Add one for presumed string termination byte \x00
+                    p_used = p_used + 1
             p_size = ptypes[p]['size']
             
             p_record = struct.pack('<HHIII', name_bytecount, p_type, p_used,
@@ -161,6 +169,24 @@ class sfo(object):
             # Update bytecount
             name_bytecount = name_bytecount + (len(p) + 1)
             data_bytecount = data_bytecount + p_size
+        
+        # Write name table
+        for p in p_names:
+            sfo_out.write(p + '\x00')
+
+        # Write data table
+        for p in p_names:
+            p_code = type_code[ptypes[p]['type']]
+            if p_code in (0x0004, 0x0204):
+                p_val = self.params[p]
+                p_size = ptypes[p]['size']
+                sfo_out.write(self.params[p]
+                              + '\x00'*max(0, p_size - len(p_val)))
+            elif p_code == 0x0404:
+                val = struct.pack('<I', self.params[p])
+                sfo_out.write(val)
+            else:
+                print 'Unsupported type'
         
         sfo_out.close()
 
