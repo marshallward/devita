@@ -2,11 +2,24 @@
 # Playstation Vita System Object File dump
 # Contact: Marshall Ward (marshall.ward@gmail.com)
 
-import struct
 import binascii
+import os
+import struct
+import yaml
 
 # SFO globals
 HEADER_BYTES = 20
+
+type_code = {
+    'utf-8 Special Mode': 0x0004,
+    'utf-8': 0x0204,
+    'integer': 0x0404}
+
+if os.path.exists('ptypes.yaml'):
+    with open('ptypes.yaml', 'r') as f:
+        ptypes = yaml.load(f)
+else:
+    ptypes = None
 
 class sfo(object):
     
@@ -77,7 +90,7 @@ class sfo(object):
             value_raw = sfo_file.read(v_total)
             
             if v_type in (0x0204, 0x0004):
-                value = value_raw
+                value = value_raw.rstrip('\x00') + '\x00'
             elif v_type == 0x0404:
                 value = int(binascii.hexlify(value_raw[::-1]))
             else:
@@ -102,7 +115,7 @@ class sfo(object):
     #---
     def write(self, fname):
         sfo_out = open(fname, 'wb')
-
+        
         # Write SFO code
         sfo_out.write(self.file_signature)
         
@@ -134,19 +147,20 @@ class sfo(object):
 
         # Parameters seem to be sorted alphabetically 
         for p in sorted(self.params):
-            name_byteref = name_bytecount
-            p_type = 0x0402     # XXX
-            p_size = 6          # XXX
-            p_total = 8         # XXX
-            data_byteref = data_bytecount
+            p_type = type_code[ptypes[p]['type']]
+            p_used = ptypes[p]['used']
+            # For undefined parameters, fill in the data size
+            if not p_used:
+                p_used = len(self.params[p])
+            p_size = ptypes[p]['size']
             
-            p_record = struct.pack('<HHIII', name_byteref, p_type, p_size,
-                                             p_total, data_byteref)
+            p_record = struct.pack('<HHIII', name_bytecount, p_type, p_used,
+                                             p_size, data_bytecount)
             sfo_out.write(p_record)
             
             # Update bytecount
             name_bytecount = name_bytecount + (len(p) + 1)
-            data_bytecount = data_bytecount + p_total
+            data_bytecount = data_bytecount + p_size
         
         sfo_out.close()
 

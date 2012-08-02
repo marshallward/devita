@@ -35,6 +35,26 @@ DETAIL:
   size: 1024
   type: utf-8
   used: null
+DISC_ID:
+  size: 16
+  type: utf-8
+  used: 10
+DISC_NUMBER:
+  size: 4
+  type: integer
+  used: 4
+DISC_TOTAL:
+  size: 4
+  type: integer
+  used: 4
+DISC_VERSION:
+  size: 8
+  type: utf-8
+  used: 5
+HRKGMP_VER:
+  size: 4
+  type: integer
+  used: 4
 ITEM_PRIORITY:
   size: 4
   type: integer
@@ -83,6 +103,14 @@ PS3_SYSTEM_VER:
   size: 8
   type: utf-8
   used: 8
+PSP_SYSTEM_VER:
+  size: 8
+  type: utf-8
+  used: 5
+REGION:
+  size: 4
+  type: integer
+  used: 4
 REGION_DENY:
   size: 4
   type: integer
@@ -147,6 +175,10 @@ TITLE_ID:
   size: 16
   type: utf-8
   used: 10
+USE_USB:
+  size: 4
+  type: integer
+  used: 4
 VERSION:
   size: 8
   type: utf-8
